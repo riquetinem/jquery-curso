@@ -1,7 +1,7 @@
 var campo = $(".campo-digitacao");
 var tempoInicial = $("#tempo-digitacao").text();
 
-$(function(){
+$(function () {
     atualizaTamanhoFrase();
     inicializaContadores();
     inicializaCronometro();
@@ -17,7 +17,7 @@ function atualizaTamanhoFrase() {
 }
 
 function inicializaContadores() {
-    campo.on("input", function() {
+    campo.on("input", function () {
         var conteudo = campo.val();
 
         var qtdPalavras = conteudo.split(/\S+/).length - 1;
@@ -30,26 +30,31 @@ function inicializaContadores() {
 
 function inicializaCronometro() {
     var tempoRestante = $("#tempo-digitacao").text();
-    campo.one("focus", function() {
-        var cronometroID = setInterval(function() {
+    campo.one("focus", function () {
+        var cronometroID = setInterval(function () {
             tempoRestante--;
             $("#tempo-digitacao").text(tempoRestante);
             if (tempoRestante < 1) {
-                campo.attr("disabled", true);
                 clearInterval(cronometroID);
-                campo.toggleClass("campo-desativado");
+                finalizaJogo();
             }
         }, 1000);
     });
 }
 
+function finalizaJogo() {
+    campo.attr("disabled", true);
+    campo.toggleClass("campo-desativado");
+    inserePlacar();
+}
+
 function inicializaMarcadores() {
     var frase = $(".frase").text();
-    campo.on("input", function() {
+    campo.on("input", function () {
         var digitado = campo.val();
-        var comparavel = frase.substr(0 , digitado.length);
+        var comparavel = frase.substr(0, digitado.length);
 
-        if(digitado == comparavel) {
+        if (digitado == comparavel) {
             campo.addClass("borda-verde");
             campo.removeClass("borda-vermelha");
         } else {
@@ -57,6 +62,19 @@ function inicializaMarcadores() {
             campo.removeClass("borda-verde");
         }
     });
+}
+
+function inserePlacar() {
+    var corpoTabela = $('.placar').find("tbody");
+    var usuario = "Henrique";
+    var numPalavras = $('#contador-palavras').text();
+
+    var linha = "<tr>" +
+        "<td>" + usuario + "</td>" +
+        "<td>" + numPalavras + "</td>" +
+        "</tr>";
+
+    corpoTabela.prepend(linha);
 }
 
 function reiniciaJogo() {
